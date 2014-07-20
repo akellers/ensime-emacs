@@ -1035,7 +1035,7 @@ versions cannot deal with that."
 
 (defun ensime-rpc-symbol-at-point ()
   (ensime-eval
-   `(swank:symbol-at-point ,buffer-file-name ,(ensime-computed-point))))
+   `(swank:symbol-at-point ,(ensime-cygwin-filename-to-win buffer-file-name) ,(ensime-computed-point))))
 
 (defun ensime-rpc-repl-config ()
   "Get the configuration information needed to launch the scala interpreter
@@ -1044,13 +1044,13 @@ with the current project's dependencies loaded. Returns a property list."
    `(swank:repl-config)))
 
 (defun ensime-rpc-remove-file (file-name)
-  (ensime-eval `(swank:remove-file ,file-name)))
+  (ensime-eval `(swank:remove-file ,(ensime-cygwin-filename-to-win file-name))))
 
 (defun ensime-rpc-async-typecheck-file (file-name continue)
-  (ensime-eval-async `(swank:typecheck-file ,file-name) continue))
+  (ensime-eval-async `(swank:typecheck-file ,(ensime-cygwin-filename-to-win file-name)) continue))
 
 (defun ensime-rpc-async-typecheck-file-with-contents (file-name contents continue)
-  (ensime-eval-async `(swank:typecheck-file ,file-name ,contents)
+  (ensime-eval-async `(swank:typecheck-file ,(ensime-cygwin-filename-to-win file-name) ,contents)
                      continue))
 
 (defun ensime-rpc-async-typecheck-all (continue)
@@ -1068,7 +1068,7 @@ with the current project's dependencies loaded. Returns a property list."
 (defun ensime-rpc-expand-selection (file-name start end)
   (ensime-internalize-offset-fields
    (ensime-eval `(swank:expand-selection
-		  ,file-name
+		  ,(ensime-cygwin-filename-to-win file-name)
 		  ,(ensime-externalize-offset start)
 		  ,(ensime-externalize-offset end)))
    :start
@@ -1079,7 +1079,7 @@ with the current project's dependencies loaded. Returns a property list."
 (defun ensime-rpc-import-suggestions-at-point (names max-results)
   (ensime-eval
    `(swank:import-suggestions
-     ,buffer-file-name
+     ,(ensime-cygwin-filename-to-win buffer-file-name)
      ,(ensime-computed-point)
      ,names
      ,max-results
@@ -1096,7 +1096,7 @@ with the current project's dependencies loaded. Returns a property list."
 (defun ensime-rpc-uses-of-symbol-at-point ()
   (ensime-eval
    `(swank:uses-of-symbol-at-point
-     ,buffer-file-name
+     ,(ensime-cygwin-filename-to-win buffer-file-name)
      ,(ensime-computed-point)
      )))
 
@@ -1116,19 +1116,19 @@ with the current project's dependencies loaded. Returns a property list."
 (defun ensime-rpc-get-type-by-name-at-point (name)
   (ensime-eval
    `(swank:type-by-name-at-point
-     ,name ,buffer-file-name ,(ensime-computed-point))))
+     ,name ,(ensime-cygwin-filename-to-win buffer-file-name) ,(ensime-computed-point))))
 
 (defun ensime-rpc-get-type-at-point ()
   (ensime-eval
-   `(swank:type-at-point ,buffer-file-name ,(ensime-computed-point))))
+   `(swank:type-at-point ,(ensime-cygwin-filename-to-win buffer-file-name) ,(ensime-computed-point))))
 
 (defun ensime-rpc-inspect-type-at-point ()
   (ensime-eval
-   `(swank:inspect-type-at-point ,buffer-file-name ,(ensime-computed-point))))
+   `(swank:inspect-type-at-point ,(ensime-cygwin-filename-to-win buffer-file-name) ,(ensime-computed-point))))
 
 (defun ensime-rpc-inspect-type-at-range (&optional range)
   (ensime-eval
-   `(swank:inspect-type-at-point ,buffer-file-name
+   `(swank:inspect-type-at-point ,(ensime-cygwin-filename-to-win buffer-file-name)
                                  ,(or range (ensime-computed-range)))))
 
 (defun ensime-rpc-inspect-type-by-id (id)
@@ -1180,7 +1180,7 @@ with the current project's dependencies loaded. Returns a property list."
 (defun ensime-rpc-completions-at-point (&optional max-results case-sens)
   (ensime-eval
    `(swank:completions
-     ,buffer-file-name
+     ,(ensime-cygwin-filename-to-win buffer-file-name)
      ,(ensime-computed-point)
      ,(or max-results 0)
      ,case-sens
