@@ -332,7 +332,7 @@
        ((and ident ensime-tooltip-type-hints)
         (progn
           (ensime-eval-async
-           `(swank:type-at-point ,buffer-file-name ,external-pos)
+           `(swank:type-at-point ,(ensime-cygwin-filename-to-win buffer-file-name) ,external-pos)
            #'(lambda (type)
                (when type
                  (let ((msg (ensime-type-full-name-with-args type)))
@@ -525,7 +525,7 @@ CACHE-DIR is the server's persistent output directory."
       proc)))
 
 (defun ensime--create-server-start-script(scala-version cache-dir)
-  (replace-regexp-in-string "CACHE_DIR" (expand-file-name cache-dir)
+  (replace-regexp-in-string "CACHE_DIR" (ensime-cygwin-filename-to-win (expand-file-name cache-dir))
 			    (replace-regexp-in-string "SCALA_VERSION" scala-version
 						      ensime--server-start-template t nil) t nil))
 
