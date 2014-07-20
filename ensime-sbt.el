@@ -113,7 +113,7 @@
 	    ("^\\[success\\][^\n]*"
 	     (0 compilation-info-face))))
      (set (make-local-variable 'comint-process-echoes) nil)
-     (set (make-local-variable 'compilation-auto-jump-to-first-error) t)
+     ;; (set (make-local-variable 'compilation-auto-jump-to-first-error) t)
      (set (make-local-variable 'comint-scroll-to-bottom-on-output) t)
      ;; `scala>' is for the repl launched from stb
      (set (make-local-variable 'comint-prompt-regexp)
@@ -125,6 +125,9 @@
 	  '(ansi-color-process-output
             comint-postoutput-scroll-to-bottom
             ensime-inf-postoutput-filter))
+     (set (make-local-variable 'comint-preoutput-filter-functions)
+	  '(ensime-cygwin-change-slashes
+	    ensime-cygwin-remove-cygwin))
      (set (make-local-variable 'comint-input-filter-functions)
           (function (lambda (str) (compilation-forget-errors) str)))
 
