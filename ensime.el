@@ -71,6 +71,7 @@
 (require 'ensime-doc)
 (require 'ensime-semantic-highlight)
 (require 'ensime-ui)
+(require 'ensime-cygwin-utils)
 (require 'timer)
 (eval-when (compile)
   (require 'apropos)
