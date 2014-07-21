@@ -19,7 +19,6 @@
 ;;     Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 ;;     MA 02111-1307, USA.
 
-
 (eval-and-compile (require 'ensime-macros))
 
 (defvar ensime-config-file-name ".ensime"
@@ -376,7 +375,7 @@
  is returned"
   (let ((active-name (plist-get full-config :active-subproject))
         (sps (plist-get full-config :subprojects)))
-    (cl-flet ((match (a b) (equal a (plist-get b :module-name))))
+    (flet ((match (a b) (equal a (plist-get b :module-name))))
       (if active-name
         (find active-name sps :test 'match)
         full-config)
