@@ -222,7 +222,7 @@ the current project's dependencies. Returns list of form (cmd [arg]*)"
       ;; now we need to find the start
       (beginning-of-line)
       (while (and (not (= (point) (point-min)))
-                  (looking-at (mapconcat '(lambda (x) x)
+                  (looking-at (mapconcat #'(lambda (x) x)
                                          '("^$"       ; empty lines
                                            "^\\s-+"   ; empty lines or lines that start with whitespace
                                            "^\\s-*}") ; lines that start with a '}'

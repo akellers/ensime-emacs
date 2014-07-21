@@ -48,9 +48,9 @@ the output received after a call to `ensime-comint-complete'.")
          (cand-max-length
           (+ 1 (apply 'max (mapcar 'length candidates))))
          (nbr-cols (/ wwidth cand-max-length)))
-    (mapcar '(lambda (cand)
-               (ensime-comint-shape-candidate
-                cand cand-max-length nbr-cols candidates))
+    (mapcar #'(lambda (cand)
+		(ensime-comint-shape-candidate
+		 cand cand-max-length nbr-cols candidates))
             candidates)))
 
 ;; TODO : this function is messy and too much based on sbt's behaviour
