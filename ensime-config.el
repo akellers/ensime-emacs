@@ -376,7 +376,7 @@
  is returned"
   (let ((active-name (plist-get full-config :active-subproject))
         (sps (plist-get full-config :subprojects)))
-    (flet ((match (a b) (equal a (plist-get b :module-name))))
+    (cl-flet ((match (a b) (equal a (plist-get b :module-name))))
       (if active-name
         (find active-name sps :test 'match)
         full-config)
