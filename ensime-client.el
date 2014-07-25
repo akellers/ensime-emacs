@@ -1063,7 +1063,9 @@ with the current project's dependencies loaded. Returns a property list."
   (ensime-eval-async `(swank:builder-update-files ,file-names) continue))
 
 (defun ensime-rpc-async-format-files (file-names continue)
-  (ensime-eval-async `(swank:format-source ,file-names) continue))
+  (ensime-eval-async `(swank:format-source 
+		       ,(mapcar 'ensime-cygwin-filename-to-win file-names)
+		       ) continue))
 
 (defun ensime-rpc-expand-selection (file-name start end)
   (ensime-internalize-offset-fields
