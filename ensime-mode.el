@@ -531,7 +531,7 @@ CACHE-DIR is the server's persistent output directory."
   (s-replace-all (list (cons "_cache_dir_" (ensime-cygwin-filename-to-win (expand-file-name cache-dir)))
 		       (cons "_scala_version_" scala-version)
 		       (cons "_active_module_" active)
-		       (cons "_config_file_" (expand-file-name config-file)))
+		       (cons "_config_file_" (ensime-cygwin-filename-to-win (expand-file-name config-file))))
 		 ensime--server-start-template))
 
 (defconst ensime--server-start-template

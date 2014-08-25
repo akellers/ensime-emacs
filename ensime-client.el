@@ -1060,12 +1060,12 @@ with the current project's dependencies loaded. Returns a property list."
   (ensime-eval-async `(swank:builder-init) continue))
 
 (defun ensime-rpc-async-builder-update (file-names continue)
-  (ensime-eval-async `(swank:builder-update-files ,file-names) continue))
+  (ensime-eval-async `(swank:builder-update-files 
+		       ,(mapcar 'ensime-cygwin-filename-to-win file-names)) continue))
 
 (defun ensime-rpc-async-format-files (file-names continue)
   (ensime-eval-async `(swank:format-source 
-		       ,(mapcar 'ensime-cygwin-filename-to-win file-names)
-		       ) continue))
+		       ,(mapcar 'ensime-cygwin-filename-to-win file-names)) continue))
 
 (defun ensime-rpc-expand-selection (file-name start end)
   (ensime-internalize-offset-fields
@@ -1166,12 +1166,11 @@ with the current project's dependencies loaded. Returns a property list."
 (defun ensime-rpc-refactor-cancel (proc-id)
   (ensime-eval-async `(swank:cancel-refactor ,proc-id) #'identity))
 
-
 (defun ensime-rpc-shutdown-server ()
   (ensime-eval `(swank:shutdown-server)))
 
 (defun ensime-rpc-symbol-designations (file start end requested-types continue)
-  (ensime-eval-async `(swank:symbol-designations ,file ,start ,end ,requested-types)
+  (ensime-eval-async `(swank:symbol-designations ,(ensime-cygwin-filename-to-win file) ,start ,end ,requested-types)
 		     continue))
 
 (defun ensime-rpc-get-call-completion (id)

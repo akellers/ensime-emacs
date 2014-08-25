@@ -377,7 +377,7 @@
 				(p (point)))
 			    (insert (format "%s: %s : line %s"
 					    header msg line))
-			    (ensime-make-code-link p (point) file beg face)))
+			    (ensime-make-code-link p (point) (ensime-cygwin-filename-to-unix file) beg face)))
 			(insert "\n"))))
 		  notes-by-file)))
      (forward-button 1)
