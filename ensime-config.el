@@ -317,7 +317,7 @@
 (defun ensime-config-load (file-name &optional force-dir)
   "Load and parse a project config file. Return the resulting plist.
    The :root-dir setting will be deduced from the location of the project file."
-  (let ((dir (expand-file-name (file-name-directory file-name)))
+  (let ((dir (ensime-cygwin-filename-to-win (expand-file-name (file-name-directory file-name))))
 	(source-path (or force-dir buffer-file-name default-directory)))
     (save-excursion
       (let ((config
