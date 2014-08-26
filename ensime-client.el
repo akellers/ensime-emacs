@@ -1150,8 +1150,7 @@ with the current project's dependencies loaded. Returns a property list."
   (ensime-eval
    `(swank:exec-undo ,id)))
 
-(defun ensime-rpc-refactor-prepare
-  (proc-id refactor-type params non-interactive continue blocking)
+(defun ensime-rpc-refactor-prepare (proc-id refactor-type params non-interactive continue blocking)
   (if blocking
       (ensime-eval
        `(swank:prepare-refactor

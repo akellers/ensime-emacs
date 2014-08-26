@@ -25,7 +25,7 @@
   (let ((grouped-changed
 	 (ensime-group-changes-by-proximity changes)))
     (dolist (ch grouped-changed)
-      (let* ((file (plist-get ch :file))
+      (let* ((file (ensime-cygwin-filename-to-unix (plist-get ch :file)))
 	     (text (plist-get ch :text))
 	     (range-start (plist-get ch :from))
 	     (range-end (plist-get ch :to))

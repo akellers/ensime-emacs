@@ -184,7 +184,7 @@
 
 
 (defun ensime-refactor-handle-result (result)
-  (let ((touched (plist-get result :touched-files)))
+  (let ((touched (mapcar 'ensime-cygwin-filename-to-unix (plist-get result :touched-files))))
     (ensime-revert-visited-files touched t)
     (ensime-event-sig :refactor-done touched)
     ))
