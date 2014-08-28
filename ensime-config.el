@@ -322,7 +322,7 @@
     (save-excursion
       (let ((config
 	     (let ((buf (find-file-read-only file-name ensime-config-file-name))
-		   (src (ensime-cygwin-convert-to-unix 
+		   (src (ensime-cygwin-convert
 			 (buffer-substring-no-properties
 			  (point-min) (point-max)))))
 	       (kill-buffer buf)
