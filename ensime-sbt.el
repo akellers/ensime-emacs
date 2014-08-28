@@ -126,8 +126,7 @@
             comint-postoutput-scroll-to-bottom
             ensime-inf-postoutput-filter))
      (set (make-local-variable 'comint-preoutput-filter-functions)
-	  '(ensime-cygwin-change-slashes
-	    ensime-cygwin-remove-cygwin))
+	  '(ensime-cygwin-convert-to-unix))
      (set (make-local-variable 'comint-input-filter-functions)
           (function (lambda (str) (compilation-forget-errors) str)))
 

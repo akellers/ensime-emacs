@@ -23,19 +23,19 @@
 (defun ensime-sem-high-apply-properties (info)
   "Use provided info to modify font-lock properties of identifiers
  in the program text."
-  (let ((file (ensime-cygwin-filename-to-unix (plist-get info :file)))
+  (let ((file (plist-get info :file))
 	(syms (plist-get info :syms)))
-    (when-let (buf (find-buffer-visiting file))
-      (with-current-buffer buf
-	(dolist (sym (ensime-sem-high-internalize-syms syms))
-	  (let* ((type (nth 0 sym))
-		 (start (nth 1 sym))
-		 (end (nth 2 sym))
-		 (face (cdr (assoc type ensime-sem-high-faces))))
-	    (let ((ov (make-overlay start end buf)))
-	      (overlay-put ov 'face face)
-	      (overlay-put ov 'ensime-sem-high-overlay t)
-	      (overlay-put ov 'ensime-sym-type type))))))))
+    (when-let (buf (find-buffer-visiting (ensime-cygwin-filename-to-unix file)))
+	      (with-current-buffer buf
+		(dolist (sym (ensime-sem-high-internalize-syms syms))
+		  (let* ((type (nth 0 sym))
+			 (start (nth 1 sym))
+			 (end (nth 2 sym))
+			 (face (cdr (assoc type ensime-sem-high-faces))))
+		    (let ((ov (make-overlay start end buf)))
+		      (overlay-put ov 'face face)
+		      (overlay-put ov 'ensime-sem-high-overlay t)
+		      (overlay-put ov 'ensime-sym-type type))))))))
 
 (defun ensime-sem-high-internalize-syms (syms)
   (if (eq 1 (coding-system-eol-type buffer-file-coding-system))

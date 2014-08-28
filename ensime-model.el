@@ -133,19 +133,18 @@
       (plist-get config :source-jars-dir))))
 
 (defun ensime-pos-file (pos)
-  (ensime-cygwin-filename-to-unix (plist-get pos :file)))
+  (plist-get pos :file))
 
 (defun ensime-pos-archive (pos)
   (plist-get pos :archive))
 
 (defun ensime-pos-effective-file (pos)
-  (ensime-cygwin-filename-to-unix
-   (if (plist-get pos :archive)
+  (if (plist-get pos :archive)
       (concat
        (ensime-source-jars-dir)
        (file-name-as-directory (file-name-nondirectory (plist-get pos :archive)))
        (plist-get pos :file))
-    (plist-get pos :file))))
+    (plist-get pos :file)))
 
 (defun ensime-pos-offset (pos)
   (plist-get pos :offset))
@@ -161,7 +160,7 @@
        (integerp (ensime-pos-offset pos))))
 
 (defun ensime-note-file (note)
-  (ensime-cygwin-filename-to-unix (plist-get note :file)))
+  (plist-get note :file))
 
 (defun ensime-note-beg (note)
   (plist-get note :beg))

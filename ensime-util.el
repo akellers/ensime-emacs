@@ -112,7 +112,7 @@ argument is supplied) is a .scala or .java file."
 (defun ensime-file-in-directory-p (file-name dir-name)
   "Determine if file named by file-name is contained in the
    directory named by dir-name."
-  (let* ((dir (file-name-as-directory (expand-file-name (ensime-cygwin-filename-to-unix dir-name))))
+  (let* ((dir (file-name-as-directory dir-name))
 	 (file (expand-file-name file-name))
 	 (d file))
     (catch 'return
