@@ -47,6 +47,12 @@ backslashes with forward slashes and removing then Cygwin root."
   (ensime-cygwin-filename-to-cyg (mapconcat 'identity
 				     (split-string f "\\\\") "/")))
 
+(defun ensime-cygwin-convert-to-unix (s)
+  "Convert string by replacing double backslashes to single
+forward slashes and removing cygwin root"
+  (replace-regexp-in-string ensime-cygwin-root ""
+			    (replace-regexp-in-string "\\\\\\\\" "/" s)))
+
 (defun ensime-cygwin-change-slashes (s)
   "Replace backward slashes with forward ones"
   (mapconcat 'identity (split-string s "\\\\") "/"))
