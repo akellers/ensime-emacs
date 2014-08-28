@@ -712,7 +712,7 @@
      (insert "\n\n\n")
 
      (dolist (pos uses)
-       (let* ((file (ensime-pos-file pos))
+       (let* ((file (ensime-cygwin-filename-to-unix (ensime-pos-file pos)))
               (pos-internal-offset (ensime-internalize-offset-for-file
                                     file
                                     (ensime-pos-offset pos)))
