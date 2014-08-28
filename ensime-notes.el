@@ -73,6 +73,8 @@ any buffer visiting the given file."
       ;; No empty note overlays!
       (when (eq beg end)
         (setq end (+ end 1)))
+      
+      (setq file (ensime-cygwin-filename-to-unix file))
 
       (let ((lang
              (cond
