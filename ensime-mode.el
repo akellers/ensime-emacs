@@ -68,6 +68,9 @@
       (define-key prefix-map (kbd "C-v t") 'ensime-show-doc-for-symbol-at-point)
       (define-key prefix-map (kbd "C-v .") 'ensime-expand-selection-command)
 
+      (define-key prefix-map (kbd "C-t t") 'ensime-goto-test)
+      (define-key prefix-map (kbd "C-t i") 'ensime-goto-impl)
+
       (define-key prefix-map (kbd "C-d d") 'ensime-db-start)
       (define-key prefix-map (kbd "C-d b") 'ensime-db-set-break)
       (define-key prefix-map (kbd "C-d u") 'ensime-db-clear-break)
@@ -82,6 +85,7 @@
       (define-key prefix-map (kbd "C-d a") 'ensime-db-clear-all-breaks)
 
       (define-key prefix-map (kbd "C-b s") 'ensime-sbt-switch)
+      (define-key prefix-map (kbd "C-b S") 'ensime-stacktrace-switch)
       (define-key prefix-map (kbd "C-b c") 'ensime-sbt-do-compile)
       (define-key prefix-map (kbd "C-b n") 'ensime-sbt-do-clean)
       (define-key prefix-map (kbd "C-b p") 'ensime-sbt-do-package)
@@ -151,6 +155,8 @@
      ["Lookup definition" ensime-edit-definition]
      ["Lookup definition in other window" ensime-edit-definition-other-window]
      ["Lookup definition in other frame" ensime-edit-definition-other-frame]
+     ["Go to test class" ensime-goto-test]
+     ["Go to implementation class" ensime-goto-impl]
      ["Pop definition stack" ensime-pop-find-definition-stack]
      ["Backward compilation note" ensime-backward-note]
      ["Forward compilation note" ensime-forward-note]
@@ -183,6 +189,7 @@
 
     "---"
     ["Go to SBT console" ensime-sbt-switch]
+    ["Go to stacktrace buffer" ensime-stacktrace-switch]
     ["Go to Scala REPL" ensime-inf-switch]
     ["Shutdown ENSIME server" ensime-shutdown]
     ))
@@ -401,7 +408,7 @@
 
 ;; Startup
 
-(defun* ensime--1 ()
+(defun* ensime--1 (&optional host port)
   (when (and (ensime-source-file-p) (not ensime-mode))
     (ensime-mode 1))
   (let* ((config-file (ensime-config-find))
@@ -419,18 +426,25 @@
 	     (name (or (plist-get active :name) (plist-get config :name) "NO_NAME"))
 	     (buffer (or (plist-get active :buffer) (plist-get config :buffer) (concat ensime-default-buffer-prefix name)))
 	     (server-java (or (plist-get active :java-home) (plist-get config :java-home) ensime-default-java-home))
-	     (server-flags (or (plist-get active :java-flags) (plist-get config :java-flags) ensime-default-java-flags)))
-
-	(let ((server-proc (ensime--maybe-start-server
-			    (generate-new-buffer-name (concat "*" buffer "*"))
-			    (ensime-fix-short-version scala-version)
-			    server-flags
-			    (cons (concat "JAVA_HOME=" server-java) server-env)
-			    (file-name-as-directory cache-dir)
-			    config-file
-			    active-name)))
-	  (when server-proc
-	    (ensime--retry-connect server-proc config cache-dir 10)))))))
+	     (server-flags (or (plist-get active :java-flags) (plist-get config :java-flags) ensime-default-java-flags))
+	     (server-details (if (and host port)
+				 (list nil host (lambda () port))
+			       (list
+				(ensime--maybe-start-server
+				 (generate-new-buffer-name (concat "*" buffer "*"))
+				 (ensime-fix-short-version scala-version)
+				 server-flags
+				 (cons (concat "JAVA_HOME=" server-java) server-env)
+				 (file-name-as-directory cache-dir)
+				 config-file
+				 active-name)
+				"127.0.0.1"
+				(lambda () (ensime-read-swank-port (concat cache-dir "/port")))))))
+	(ensime--retry-connect 
+	   (car server-details)
+	   (cadr server-details)
+	   (caddr server-details)
+	   config cache-dir 10)))))
 
 
 (defun ensime-fix-short-version (v)
@@ -588,26 +602,26 @@ defined."
 	  (assert (integerp port))
 	  port)))))
 
-(defun ensime--retry-connect (server-proc config cache-dir attempts)
-  (let* ((portfile (concat cache-dir "/port"))
-	 (port (ensime-read-swank-port portfile)))
-    (cond (ensime--abort-connection
-	   (setq ensime--abort-connection nil)
-	   (message "Aborted"))
-	  ((>= 0 attempts)
-	   (message "Ran out of connection attempts."))
-	  ((eq (process-status server-proc) 'exit)
-	   (message "Failed to connect: server process exited."))
-	  (t
+(defun ensime--retry-connect (server-proc host port-fn config cache-dir attempts)
+  (cond (ensime--abort-connection
+	 (setq ensime--abort-connection nil)
+	 (message "Aborted"))
+	((>= 0 attempts)
+	 (message "Ran out of connection attempts."))
+	;; should we test for remote process exiting - how ?
+	((and server-proc (eq (process-status server-proc) 'exit))
+	 (message "Failed to connect: server process exited."))
+	(t
+	 (let ((port (funcall port-fn)))
 	   (if port
-	       (ensime--connect server-proc config port)
+	       (ensime--connect host port config)
 	     (run-at-time "6 sec" nil
 			  'ensime-timer-call 'ensime--retry-connect
-			  server-proc config cache-dir (1- attempts)))))))
+			  server-proc host port-fn config cache-dir (1- attempts)))))))
 
-(defun ensime--connect (server-proc config port)
-  ; non-nil if a connection was made, nil otherwise
-  (let ((c (ensime-connect "127.0.0.1" port)))
+(defun ensime--connect (host port config)
+  ;; non-nil if a connection was made, nil otherwise
+  (let ((c (ensime-connect host port)))
     ;; It may take a few secs to get the source roots back from the
     ;; server, so we won't know immediately if currently visited
     ;; source is part of the new project. Make an educated guess for
@@ -625,15 +639,7 @@ defined."
     (let ((ensime-dispatching-connection c))
       (ensime-eval-async
        '(swank:connection-info)
-       (ensime-curry #'ensime-handle-connection-info c)))
-
-    (ensime-set-server-process c server-proc)
-    ;; As a convenience, we associate the client connection with the
-    ;; server buffer. This assumes that there's only one client
-    ;; connection per server. So far this is a safe assumption.
-    (when-let (server-buf (process-buffer server-proc))
-	      (with-current-buffer server-buf
-		(setq ensime-buffer-connection c)))))
+       (ensime-curry #'ensime-handle-connection-info c)))))
 
 (defun ensime-timer-call (fun &rest args)
   "Call function FUN with ARGS, reporting all errors.

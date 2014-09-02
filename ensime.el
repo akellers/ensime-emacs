@@ -38,6 +38,7 @@
   (require 'ensime-macros)
   (require 'ensime-client))
 
+(require 'url-gw)
 (require 'dash)
 (require 'arc-mode)
 (require 'thingatpt)
@@ -56,9 +57,11 @@
 (require 'ensime-auto-complete)
 (require 'ensime-sbt)
 (require 'ensime-inf)
+(require 'ensime-stacktrace)
 (require 'ensime-debug)
 (require 'ensime-builder)
 (require 'ensime-editor)
+(require 'ensime-goto-testfile)
 (require 'ensime-inspector)
 (require 'ensime-mode)
 (require 'ensime-model)
@@ -91,6 +94,12 @@
    ENSIME server and connect to its Swank server."
   (interactive)
   (ensime--1))
+
+;;;###autoload
+(defun ensime-remote (host port)
+  "Read config file for settings. Then connect to an existing ENSIME server."
+  (interactive "shost: \nnport: ")
+  (ensime--1 (url-gateway-nslookup-host host) port))
 
 (provide 'ensime)
 
