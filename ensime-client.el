@@ -939,7 +939,9 @@ versions cannot deal with that."
 
 (defun ensime-rpc-method-bytecode (file line)
   (ensime-eval
-   `(swank:method-bytecode ,file ,line)))
+   `(swank:method-bytecode 
+     ,file 
+     ,line)))
 
 (defun ensime-rpc-debug-active-vm ()
   (ensime-eval
@@ -947,27 +949,41 @@ versions cannot deal with that."
 
 (defun ensime-rpc-debug-backtrace (thread-id index count)
   (ensime-eval
-   `(swank:debug-backtrace ,thread-id ,index ,count)))
+   `(swank:debug-backtrace 
+     ,thread-id 
+     ,index 
+     ,count)))
 
 (defun ensime-rpc-async-debug-backtrace (thread-id index count continue)
   (ensime-eval-async
-   `(swank:debug-backtrace ,thread-id ,index ,count) continue))
+   `(swank:debug-backtrace 
+     ,thread-id 
+     ,index 
+     ,count) 
+   continue))
 
 (defun ensime-rpc-debug-locate-name (thread-id name)
   (ensime-eval
-   `(swank:debug-locate-name ,thread-id ,name)))
+   `(swank:debug-locate-name 
+     ,thread-id 
+     ,name)))
 
 (defun ensime-rpc-debug-value (location)
   (ensime-eval
-   `(swank:debug-value ,location)))
+   `(swank:debug-value 
+     ,location)))
 
 (defun ensime-rpc-debug-to-string (thread-id location)
   (ensime-eval
-   `(swank:debug-to-string ,thread-id ,location)))
+   `(swank:debug-to-string 
+     ,thread-id 
+     ,location)))
 
 (defun ensime-rpc-debug-set-value (location new-val)
   (ensime-eval
-   `(swank:debug-set-value ,location ,new-val)))
+   `(swank:debug-set-value 
+     ,location 
+     ,new-val)))
 
 (defun ensime-rpc-debug-start (command-line)
   (ensime-eval
@@ -975,7 +991,9 @@ versions cannot deal with that."
 
 (defun ensime-rpc-debug-attach (hostname port)
   (ensime-eval
-   `(swank:debug-attach ,hostname ,port)))
+   `(swank:debug-attach 
+     ,hostname 
+     ,port)))
 
 (defun ensime-rpc-debug-stop ()
   (ensime-eval
@@ -983,11 +1001,13 @@ versions cannot deal with that."
 
 (defun ensime-rpc-debug-next (thread-id)
   (ensime-eval
-   `(swank:debug-next ,thread-id)))
+   `(swank:debug-next 
+     ,thread-id)))
 
 (defun ensime-rpc-debug-continue (thread-id)
   (ensime-eval
-   `(swank:debug-continue ,thread-id)))
+   `(swank:debug-continue 
+     ,thread-id)))
 
 (defun ensime-rpc-debug-run ()
   (ensime-eval
@@ -995,11 +1015,13 @@ versions cannot deal with that."
 
 (defun ensime-rpc-debug-step (thread-id)
   (ensime-eval
-   `(swank:debug-step ,thread-id)))
+   `(swank:debug-step 
+     ,thread-id)))
 
 (defun ensime-rpc-debug-step-out (thread-id)
   (ensime-eval
-   `(swank:debug-step-out ,thread-id)))
+   `(swank:debug-step-out 
+     ,thread-id)))
 
 (defun ensime-rpc-debug-list-breakpoints ()
   (ensime-eval
@@ -1007,11 +1029,15 @@ versions cannot deal with that."
 
 (defun ensime-rpc-debug-set-break (file line)
   (ensime-eval
-   `(swank:debug-set-break ,file ,line)))
+   `(swank:debug-set-break 
+     ,file 
+     ,line)))
 
 (defun ensime-rpc-debug-clear-break (file line)
   (ensime-eval
-   `(swank:debug-clear-break ,file ,line)))
+   `(swank:debug-clear-break 
+     ,file 
+     ,line)))
 
 (defun ensime-rpc-debug-clear-all-breaks ()
   (ensime-eval
@@ -1019,7 +1045,9 @@ versions cannot deal with that."
 
 (defun ensime-rpc-symbol-at-point ()
   (ensime-eval
-   `(swank:symbol-at-point ,(ensime-cygwin-filename-to-win buffer-file-name) ,(ensime-computed-point))))
+   `(swank:symbol-at-point 
+     ,(ensime-cygwin-filename-to-win buffer-file-name) 
+     ,(ensime-computed-point))))
 
 (defun ensime-rpc-repl-config ()
   "Get the configuration information needed to launch the scala interpreter
@@ -1028,35 +1056,52 @@ with the current project's dependencies loaded. Returns a property list."
    `(swank:repl-config)))
 
 (defun ensime-rpc-remove-file (file-name)
-  (ensime-eval `(swank:remove-file ,(ensime-cygwin-filename-to-win file-name))))
+  (ensime-eval 
+   `(swank:remove-file 
+     ,(ensime-cygwin-filename-to-win file-name))))
 
 (defun ensime-rpc-async-typecheck-file (file-name continue)
-  (ensime-eval-async `(swank:typecheck-file ,(ensime-cygwin-filename-to-win file-name)) continue))
+  (ensime-eval-async 
+   `(swank:typecheck-file 
+     ,(ensime-cygwin-filename-to-win file-name)) 
+   continue))
 
 (defun ensime-rpc-async-typecheck-file-with-contents (file-name contents continue)
-  (ensime-eval-async `(swank:typecheck-file ,(ensime-cygwin-filename-to-win file-name) ,contents)
-                     continue))
+  (ensime-eval-async 
+   `(swank:typecheck-file 
+     ,(ensime-cygwin-filename-to-win file-name) 
+     ,contents)
+   continue))
 
 (defun ensime-rpc-async-typecheck-all (continue)
-  (ensime-eval-async `(swank:typecheck-all) continue))
+  (ensime-eval-async 
+   `(swank:typecheck-all) 
+   continue))
 
 (defun ensime-rpc-async-builder-init (continue)
-  (ensime-eval-async `(swank:builder-init) continue))
+  (ensime-eval-async 
+   `(swank:builder-init) 
+   continue))
 
 (defun ensime-rpc-async-builder-update (file-names continue)
-  (ensime-eval-async `(swank:builder-update-files 
-		       ,(mapcar 'ensime-cygwin-filename-to-win file-names)) continue))
+  (ensime-eval-async 
+   `(swank:builder-update-files 
+     ,(mapcar 'ensime-cygwin-filename-to-win file-names)) 
+   continue))
 
 (defun ensime-rpc-async-format-files (file-names continue)
-  (ensime-eval-async `(swank:format-source 
-		       ,(mapcar 'ensime-cygwin-filename-to-win file-names)) continue))
+  (ensime-eval-async 
+   `(swank:format-source 
+     ,(mapcar 'ensime-cygwin-filename-to-win file-names)) 
+   continue))
 
 (defun ensime-rpc-expand-selection (file-name start end)
   (ensime-internalize-offset-fields
-   (ensime-eval `(swank:expand-selection
-		  ,(ensime-cygwin-filename-to-win file-name)
-		  ,(ensime-externalize-offset start)
-		  ,(ensime-externalize-offset end)))
+   (ensime-eval 
+    `(swank:expand-selection
+      ,(ensime-cygwin-filename-to-win file-name)
+      ,(ensime-externalize-offset start)
+      ,(ensime-externalize-offset end)))
    :start
    :end
    ))
@@ -1071,8 +1116,7 @@ with the current project's dependencies loaded. Returns a property list."
      ,max-results
      )))
 
-(defun ensime-rpc-async-public-symbol-search
-  (names max-results continue)
+(defun ensime-rpc-async-public-symbol-search (names max-results continue)
   (ensime-eval-async
    `(swank:public-symbol-search
      ,names
@@ -1083,30 +1127,37 @@ with the current project's dependencies loaded. Returns a property list."
   (ensime-eval
    `(swank:uses-of-symbol-at-point
      ,(ensime-cygwin-filename-to-win buffer-file-name)
-     ,(ensime-computed-point)
-     )))
+     ,(ensime-computed-point))))
 
 (defun ensime-rpc-package-member-completions (path &optional prefix)
   (ensime-eval
-   `(swank:package-member-completion ,path ,(or prefix ""))))
+   `(swank:package-member-completion 
+     ,path 
+     ,(or prefix ""))))
 
 (defun ensime-rpc-get-type-by-id (id)
   (if (and (integerp id) (> id -1))
       (ensime-eval
-       `(swank:type-by-id ,id))))
+       `(swank:type-by-id 
+	 ,id))))
 
 (defun ensime-rpc-get-type-by-name (name)
   (ensime-eval
-   `(swank:type-by-name ,name)))
+   `(swank:type-by-name 
+     ,name)))
 
 (defun ensime-rpc-get-type-by-name-at-point (name)
   (ensime-eval
    `(swank:type-by-name-at-point
-     ,name ,(ensime-cygwin-filename-to-win buffer-file-name) ,(ensime-computed-point))))
+     ,name 
+     ,(ensime-cygwin-filename-to-win buffer-file-name) 
+     ,(ensime-computed-point))))
 
 (defun ensime-rpc-get-type-at-point ()
   (ensime-eval
-   `(swank:type-at-point ,(ensime-cygwin-filename-to-win buffer-file-name) ,(ensime-computed-point))))
+   `(swank:type-at-point 
+     ,(ensime-cygwin-filename-to-win buffer-file-name) 
+     ,(ensime-computed-point))))
 
 (defun ensime-rpc-inspect-type-at-point ()
   (ensime-eval
@@ -1114,17 +1165,20 @@ with the current project's dependencies loaded. Returns a property list."
 
 (defun ensime-rpc-inspect-type-at-range (&optional range)
   (ensime-eval
-   `(swank:inspect-type-at-point ,(ensime-cygwin-filename-to-win buffer-file-name)
-                                 ,(or range (ensime-computed-range)))))
+   `(swank:inspect-type-at-point 
+     ,(ensime-cygwin-filename-to-win buffer-file-name)
+     ,(or range (ensime-computed-range)))))
 
 (defun ensime-rpc-inspect-type-by-id (id)
   (if (and (integerp id) (> id -1))
       (ensime-eval
-       `(swank:inspect-type-by-id ,id))))
+       `(swank:inspect-type-by-id 
+	 ,id))))
 
 (defun ensime-rpc-inspect-package-by-path (path)
   (ensime-eval
-   `(swank:inspect-package-by-path ,path)))
+   `(swank:inspect-package-by-path 
+     ,path)))
 
 (defun ensime-rpc-peek-undo ()
   (ensime-eval
@@ -1132,34 +1186,55 @@ with the current project's dependencies loaded. Returns a property list."
 
 (defun ensime-rpc-exec-undo (id)
   (ensime-eval
-   `(swank:exec-undo ,id)))
+   `(swank:exec-undo 
+     ,id)))
 
 (defun ensime-rpc-refactor-prepare (proc-id refactor-type params non-interactive continue blocking)
   (if blocking
       (ensime-eval
        `(swank:prepare-refactor
-	 ,proc-id ,refactor-type ,params ,(not non-interactive)))
+	 ,proc-id 
+	 ,refactor-type 
+	 ,params 
+	 ,(not non-interactive)))
     (ensime-eval-async
      `(swank:prepare-refactor
-       ,proc-id ,refactor-type ,params ,(not non-interactive)) continue)))
+       ,proc-id 
+       ,refactor-type 
+       ,params 
+       ,(not non-interactive)) 
+     continue)))
 
 (defun ensime-rpc-refactor-exec (proc-id refactor-type continue)
-  (ensime-eval-async `(swank:exec-refactor ,proc-id , refactor-type) continue))
+  (ensime-eval-async 
+   `(swank:exec-refactor 
+     ,proc-id 
+     ,refactor-type) 
+   continue))
 
 (defun ensime-rpc-refactor-cancel (proc-id)
-  (ensime-eval-async `(swank:cancel-refactor ,proc-id) #'identity))
+  (ensime-eval-async 
+   `(swank:cancel-refactor 
+     ,proc-id) #'identity))
 
 (defun ensime-rpc-shutdown-server ()
-  (ensime-eval `(swank:shutdown-server)))
+  (ensime-eval 
+   `(swank:shutdown-server)))
 
 (defun ensime-rpc-symbol-designations (file start end requested-types continue)
-  (ensime-eval-async `(swank:symbol-designations ,(ensime-cygwin-filename-to-win file) ,start ,end ,requested-types)
-		     continue))
+  (ensime-eval-async 
+   `(swank:symbol-designations 
+     ,(ensime-cygwin-filename-to-win file) 
+     ,start 
+     ,end 
+     ,requested-types)
+   continue))
 
 (defun ensime-rpc-get-call-completion (id)
   (if (and (integerp id) (> id -1))
       (ensime-eval
-       `(swank:call-completion ,id))))
+       `(swank:call-completion 
+	 ,id))))
 
 (defun ensime-rpc-completions-at-point (&optional max-results case-sens)
   (ensime-eval
