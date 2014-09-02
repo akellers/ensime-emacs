@@ -352,10 +352,10 @@
 				       (lambda (a b) (< (ensime-note-beg a)
 							(ensime-note-beg b)
 							)))))
-
+		      
 		      ;; Output file heading
 		      (ensime-insert-with-face
-		       (concat "\n" file-heading "\n")
+		       (concat "\n" (ensime-cygwin-filename-to-unix file-heading) "\n")
 		       'font-lock-comment-face)
 
 		      ;; Output the notes

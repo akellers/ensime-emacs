@@ -74,8 +74,6 @@ any buffer visiting the given file."
       (when (eq beg end)
         (setq end (+ end 1)))
       
-      (setq file (ensime-cygwin-filename-to-unix file))
-
       (let ((lang
              (cond
               ((ensime-java-file-p file) 'java)
