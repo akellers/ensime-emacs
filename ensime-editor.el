@@ -205,7 +205,6 @@
 	 (pos (ensime-symbol-decl-pos info))
 	 (offset (ensime-pos-offset pos))
 	 (type (ensime-symbol-type info)))
-    ;; (message "KLRA ensime-edit-definition with info %s" info)
     (cond
      ((ensime-pos-valid-local-p pos)
       (progn
@@ -259,7 +258,6 @@
   (let* ((file (ensime-cygwin-to-cyg (ensime-pos-effective-file pos)))
 	 (file-visible-window (ensime-window-showing-file file)))
     
-    (message "KLRA ensime-goto-source-location with file %s" file)
     (when (not file-visible-window)
       (ensime-find-file-from-pos pos where)
       (setq file-visible-window
