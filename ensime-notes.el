@@ -49,7 +49,7 @@ any buffer visiting the given file."
         (end e))
     (assert (or (integerp line)
                 (and (integerp beg) (integerp end))))
-    (when-let (buf (find-buffer-visiting (ensime-cygwin-filename-to-unix file)))
+    (when-let (buf (find-buffer-visiting (ensime-cygwin-to-cyg file)))
               (with-current-buffer buf
                 (if (and (integerp beg) (integerp end))
                     (progn

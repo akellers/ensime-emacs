@@ -25,7 +25,7 @@
   (let ((grouped-changed
 	 (ensime-group-changes-by-proximity changes)))
     (dolist (ch grouped-changed)
-      (let* ((file (ensime-cygwin-filename-to-unix (plist-get ch :file)))
+      (let* ((file (ensime-cygwin-to-cyg (plist-get ch :file)))
 	     (text (plist-get ch :text))
 	     (range-start (plist-get ch :from))
 	     (range-end (plist-get ch :to))
@@ -205,6 +205,7 @@
 	 (pos (ensime-symbol-decl-pos info))
 	 (offset (ensime-pos-offset pos))
 	 (type (ensime-symbol-type info)))
+    ;; (message "KLRA ensime-edit-definition with info %s" info)
     (cond
      ((ensime-pos-valid-local-p pos)
       (progn
@@ -255,9 +256,10 @@
 (defun ensime-goto-source-location (pos &optional where)
   "Move to the source location POS. Don't open
  a new window or buffer if file is open and visible already."
-  (let* ((file (ensime-pos-effective-file pos))
+  (let* ((file (ensime-cygwin-to-cyg (ensime-pos-effective-file pos)))
 	 (file-visible-window (ensime-window-showing-file file)))
-
+    
+    (message "KLRA ensime-goto-source-location with file %s" file)
     (when (not file-visible-window)
       (ensime-find-file-from-pos pos where)
       (setq file-visible-window
@@ -355,7 +357,7 @@
 		      
 		      ;; Output file heading
 		      (ensime-insert-with-face
-		       (concat "\n" (ensime-cygwin-filename-to-unix file-heading) "\n")
+		       (concat "\n" (ensime-cygwin-to-cyg file-heading) "\n")
 		       'font-lock-comment-face)
 
 		      ;; Output the notes
@@ -378,7 +380,9 @@
 				(p (point)))
 			    (insert (format "%s: %s : line %s"
 					    header msg line))
-			    (ensime-make-code-link p (point) (ensime-cygwin-filename-to-unix file) beg face)))
+			    (ensime-make-code-link p 
+						   (point) 
+						   (ensime-cygwin-to-cyg file) beg face)))
 			(insert "\n"))))
 		  notes-by-file)))
      (forward-button 1)
@@ -713,7 +717,7 @@
      (insert "\n\n\n")
 
      (dolist (pos uses)
-       (let* ((file (ensime-cygwin-filename-to-unix (ensime-pos-file pos)))
+       (let* ((file (ensime-cygwin-to-cyp (ensime-pos-file pos)))
               (pos-internal-offset (ensime-internalize-offset-for-file
                                     file
                                     (ensime-pos-offset pos)))

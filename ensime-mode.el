@@ -339,7 +339,9 @@
        ((and ident ensime-tooltip-type-hints)
         (progn
           (ensime-eval-async
-           `(swank:type-at-point ,(ensime-cygwin-filename-to-win buffer-file-name) ,external-pos)
+           `(swank:type-at-point 
+	     ,(ensime-cygwin-to-win buffer-file-name) 
+	     ,external-pos)
            #'(lambda (type)
                (when type
                  (let ((msg (ensime-type-full-name-with-args type)))
@@ -542,10 +544,13 @@ CACHE-DIR is the server's persistent output directory."
 (defun ensime--create-server-start-script (scala-version cache-dir config-file active)
   ;; emacs has some weird case-preservation rules in regexp replace
   ;; see http://github.com/magnars/s.el/issues/62
-  (s-replace-all (list (cons "_cache_dir_" (ensime-cygwin-filename-to-win (expand-file-name cache-dir)))
+  (s-replace-all (list 
+		  (cons "_cache_dir_" 
+			(ensime-cygwin-to-win (expand-file-name cache-dir)))
 		       (cons "_scala_version_" scala-version)
 		       (cons "_active_module_" active)
-		       (cons "_config_file_" (ensime-cygwin-filename-to-win (expand-file-name config-file))))
+		       (cons "_config_file_" 
+			     (ensime-cygwin-to-win (expand-file-name config-file))))
 		 ensime--server-start-template))
 
 (defconst ensime--server-start-template

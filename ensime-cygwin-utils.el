@@ -23,57 +23,37 @@
 
 (defun ensime-cygwin-root-init ()
   "Get name of Windows root of current Cygwin installation.
-Returns empty string if system is not Cygwin"
+Returns empty string if `system-type' does  not equal 'cygwin"
   (if (eq system-type 'cygwin)
-      (let ((root (shell-command-to-string "cygpath -m /")))
-	(substring root 0 (- (length root) 1)))
+      (substring (shell-command-to-string "cygpath --mixed /")
+		 0 -1)
     ""))
 
 (defvar ensime-cygwin-root (ensime-cygwin-root-init)
   "Name of the Windows root of the Cygwin installation
 used to translate windows path to cygwin and vice versa.")
 
-(defun ensime-cygwin-filename-to-win (s)
-  "Convert Cygwin filename to Windows"
-  (concat ensime-cygwin-root s))
- 
-(defun ensime-cygwin-filename-to-cyg (f)
-  "Convert Windows filename to Cygwin"
-  (substring f (length ensime-cygwin-root)))
+(defun ensime-cygwin-replace-backslashes (s)
+  "Replace double backslash or single backslashes to single
+forward slashes in string s."
+  (replace-regexp-in-string 
+   "\\\\" "/" (replace-regexp-in-string "\\\\\\\\" "/" s)))
 
-(defun ensime-cygwin-filename-to-unix (f)
-  "Convert Windows filename with backslash to Cygwin by replacing
-backslashes with forward slashes and removing then Cygwin root."
-  (ensime-cygwin-filename-to-cyg (mapconcat 'identity
-				     (split-string f "\\\\") "/")))
-
-
-(defun ensime-cygwin-convert-backslashes (s)
-  "Convert double backslashes to single forward slashes."
-  (replace-regexp-in-string "\\\\\\\\" "/" s))
-
-(defun ensime-cygwin-convert-backslash (s)
-  "Convert double backslashes to single forward slashes."
-  (replace-regexp-in-string "\\\\" "/" s))
-
-(defun ensime-cygwin-convert-cygwin (s)
-  "Convert cygwin root value with empty string"
+(defun ensime-cygwin-replace-cygwin-root (s)
+  "Replace `ensime-cygwin-root' with empty string in s."
   (replace-regexp-in-string ensime-cygwin-root "" s))
 
-(defun ensime-cygwin-convert (s)
-  "Convert string using backslash and cygwin conversion"
-  (ensime-cygwin-convert-cygwin 
-   (ensime-cygwin-convert-backslash 
-    (ensime-cygwin-convert-backslashes s))))
-
-(defun ensime-cygwin-change-slashes (s)
-  "Replace backward slashes with forward ones"
-  (mapconcat 'identity (split-string s "\\\\") "/"))
-
-(defun ensime-cygwin-remove-cygwin (s)
-  "Replace Cygwin root in string"
-  (mapconcat 'identity (split-string s ensime-cygwin-root) ""))
-
+(defun ensime-cygwin-to-win (f)
+  "Convert Cygwin filename to Windows by prepending
+`ensime-cygwin-root' to the true filename."
+  (concat ensime-cygwin-root (file-truename f)))
+ 
+(defun ensime-cygwin-to-cyg (s)
+  "Convert string using backslash and Cygwin conversion. Windows
+filenames will be converted to Cygwin ones (if under the same
+root)."
+  (ensime-cygwin-replace-cygwin-root
+   (ensime-cygwin-replace-backslashes s)))
 
 (provide 'ensime-cygwin-utils)
 ;;; ##########

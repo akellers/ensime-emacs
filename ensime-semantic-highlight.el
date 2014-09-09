@@ -25,7 +25,7 @@
  in the program text."
   (let ((file (plist-get info :file))
 	(syms (plist-get info :syms)))
-    (when-let (buf (find-buffer-visiting (ensime-cygwin-filename-to-unix file)))
+    (when-let (buf (find-buffer-visiting (ensime-cygwin-to-cyg file)))
 	      (with-current-buffer buf
 		(dolist (sym (ensime-sem-high-internalize-syms syms))
 		  (let* ((type (nth 0 sym))

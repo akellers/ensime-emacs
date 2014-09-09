@@ -84,7 +84,7 @@
 			 (read-string (format "Rename '%s' to: " old-name)))))
 	  (ensime-refactor-prepare
 	   'rename
-	   `(file ,(ensime-cygwin-filename-to-win buffer-file-name)
+	   `(file ,(ensime-cygwin-to-win buffer-file-name)
 		  start ,(- start ensime-ch-fix)
 		  end ,(- end ensime-ch-fix)
 		  newName ,name)))
@@ -100,7 +100,7 @@
 	       (end (plist-get sym :end)))
 	  (ensime-refactor-prepare
 	   'inlineLocal
-	   `(file ,(ensime-cygwin-filename-to-win buffer-file-name)
+	   `(file ,(ensime-cygwin-to-win buffer-file-name)
 		  start ,(- start ensime-ch-fix)
 		  end ,(- end ensime-ch-fix))))
       (message "Please place cursor on a local value."))))
@@ -112,7 +112,7 @@
   (let* ((name (read-string "Name of method: ")))
     (ensime-refactor-prepare
      'extractMethod
-     `(file ,(ensime-cygwin-filename-to-win buffer-file-name)
+     `(file ,(ensime-cygwin-to-win buffer-file-name)
 	    start ,(- (mark) ensime-ch-fix)
 	    end ,(- (point) ensime-ch-fix)
 	    methodName ,name))))
@@ -124,7 +124,7 @@
   (let* ((name (read-string "Name of local value: ")))
     (ensime-refactor-prepare
      'extractLocal
-     `(file ,(ensime-cygwin-filename-to-win buffer-file-name)
+     `(file ,(ensime-cygwin-to-win buffer-file-name)
 	    start ,(- (mark) ensime-ch-fix)
 	    end ,(- (point) ensime-ch-fix)
 	    name ,name))))
@@ -137,7 +137,7 @@
              (read-string "Qualified name of type to import: "))))
     (let ((result (ensime-refactor-prepare
                    'addImport
-                   `(file ,(ensime-cygwin-filename-to-win buffer-file-name)
+                   `(file ,(ensime-cygwin-to-win buffer-file-name)
                           qualifiedName ,qualified-name) t t
                           )))
       (ensime-refactor-handle-result result))))
@@ -185,7 +185,7 @@
 
 (defun ensime-refactor-handle-result (result)
   (let ((touched (plist-get result :touched-files)))
-    (ensime-revert-visited-files (mapcar 'ensime-cygwin-filename-to-unix touched) t)
+    (ensime-revert-visited-files (mapcar 'ensime-cygwin-to-cyg touched) t)
     (ensime-event-sig :refactor-done touched)
     ))
 

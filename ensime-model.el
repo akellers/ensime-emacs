@@ -126,14 +126,13 @@
 (defun ensime-member-pos (member)
   (plist-get member :pos))
 
-
 (defun ensime-source-jars-dir ()
   (when (ensime-connected-p)
     (let ((config (ensime-config (ensime-current-connection))))
       (plist-get config :source-jars-dir))))
 
 (defun ensime-pos-file (pos)
-  (plist-get pos :file))
+  (ensime-cygwin-to-cyg (plist-get pos :file)))
 
 (defun ensime-pos-archive (pos)
   (plist-get pos :archive))
@@ -160,7 +159,7 @@
        (integerp (ensime-pos-offset pos))))
 
 (defun ensime-note-file (note)
-  (plist-get note :file))
+  (ensime-cygwin-to-cyg (plist-get note :file)))
 
 (defun ensime-note-beg (note)
   (plist-get note :beg))
