@@ -1,4 +1,4 @@
-# ENSIME (Test - again)
+# ENSIME (Test - once again)
 
 ENhanced Scala Interaction Mode for [Emacs](http://www.gnu.org/software/emacs/).
 
